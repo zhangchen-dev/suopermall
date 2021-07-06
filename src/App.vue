@@ -1,14 +1,14 @@
 <template>
   <div id="app">
-    <main-tab-bar></main-tab-bar>
+    <!-- <main-tab-bar></main-tab-bar> -->
   </div>
 </template>
 <script>
-import MainTabBar from "./components/content/Maintabbar/maintabbar";
+// import MainTabBar from "m";
 export default {
   name: "App",
   components: {
-    MainTabBar,
+    // MainTabBar,
   },
 };
 </script>
