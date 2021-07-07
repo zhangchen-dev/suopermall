@@ -16,11 +16,11 @@ export default {
       dafault: "red",
     },
   },
-  data() {
-    return {
-      // isActive: true,
-    };
-  },
+  // data() {
+  //   return {
+  //     isActive: true,
+  //   };
+  // },
   computed: {
     isActive() {
       return this.$route.path.indexOf(this.link) !== -1; //判断当前活跃的路径是否是我现在的路径吗
