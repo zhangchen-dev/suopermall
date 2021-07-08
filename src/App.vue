@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <maintabbar></maintabbar>
+    <router-view></router-view>
   </div>
 </template>
 <script>

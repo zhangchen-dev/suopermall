@@ -1,5 +1,5 @@
 <template>
-  <h2>首页</h2>
+  <h2>首页hehehe</h2>
 </template>
 <script>
 export default {
