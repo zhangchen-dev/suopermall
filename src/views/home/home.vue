@@ -13,12 +13,16 @@ export default {
     NavBar,
   },
   data() {
-    return { result: null };
+    return {
+      banners: [],
+      recommends: [],
+    };
   },
   created() {
     getHomeMutlidata().then((res) => {
-      console.log(res);
-      this.result = res;
+      // console.log(res);
+      this.banners = res.data.banner.list;
+      this.recommends = res.data.recommend.list;
     });
   },
 };
