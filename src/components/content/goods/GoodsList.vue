@@ -30,6 +30,7 @@ export default {
   /* flex属性换行 */
   align-items: center;
   justify-content: space-between;
+  /* 均等分空间 */
   padding: 0 6px;
 }
 </style>

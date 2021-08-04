@@ -30,6 +30,7 @@ export default {
   methods: {
     itemclick(key) {
       this.currentkey = key;
+      this.$emit("tabClick", key);
     },
   },
 };
