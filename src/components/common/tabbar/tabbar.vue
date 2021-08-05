@@ -8,7 +8,7 @@ export default {
   name: "tabbar",
 };
 </script>
-<style scoped>
+<style>
 #tabbar {
   display: flex;
   background-color: #f6f6f6;
@@ -17,5 +17,6 @@ export default {
   right: 0;
   bottom: 0;
   box-shadow: 0px -2px 1px rgba(100, 100, 100, 0.1);
+  z-index: 9;
 }
 </style>

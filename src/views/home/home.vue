@@ -1,15 +1,18 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-    <home-swiper :banners="banners" />
-    <home-recommend-view :recommends="recommends" />
-    <feature-view />
-    <tab-control
-      :titles="['流行', '新款', '精选']"
-      class="tabcontrol"
-      @tabClick="tabClick"
-    />
-    <goods-list :goods="showgoods" />
+    <scroll class="scroll">
+      <home-swiper :banners="banners" />
+      <home-recommend-view :recommends="recommends" />
+      <feature-view />
+      <tab-control
+        :titles="['流行', '新款', '精选']"
+        class="tabcontrol"
+        @tabClick="tabClick"
+      />
+      <goods-list :goods="showgoods" />
+    </scroll>
+    <back-top @click.native="backClick" />
   </div>
 </template>
 <script>
@@ -23,9 +26,12 @@ import NavBar from "components/common/navbar/NavBar.vue";
 import TabControl from "components/content/tabControl/TabControl.vue";
 import GoodsList from "components/content/goods/GoodsList.vue";
 import GoodsListItem from "components/content/goods/GoodsListItem.vue";
+import BackTop from "components/content/backTop/BackTop.vue";
 
 // 网络部分
 import { getHomeMutlidata, getHomegoods } from "network/home";
+
+import Scroll from "components/common/scroll/Scroll.vue";
 
 export default {
   name: "home",
@@ -35,9 +41,10 @@ export default {
     FeatureView,
     NavBar,
     TabControl,
-    TabControl,
     GoodsListItem,
     GoodsList,
+    Scroll,
+    BackTop,
   },
   data() {
     return {
@@ -100,9 +107,12 @@ export default {
 </script>
 <style scoped>
 #home {
-  margin-top: 44px;
+  /* margin-top: 44px; */
+  padding-top: 44px;
 }
 .home-nav {
+  position: relative;
+
   background-color: var(--color-tint);
   color: #fff;
   position: fixed;
@@ -112,9 +122,18 @@ export default {
   z-index: 9;
 }
 .tabcontrol {
+  position: absolute;
   position: sticky;
   background-color: #fff;
   top: 44px;
   z-index: 9;
+}
+.scroll {
+  overflow: hidden;
+  position: absolute;
+  top: 44px;
+  left: 0px;
+  right: 0px;
+  bottom: 49px;
 }
 </style>
