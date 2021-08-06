@@ -9,14 +9,7 @@
       class="tabcontrol"
       @tabClick="tabClick"
     />
-    <scroll
-      class="scroll"
-      ref="scroll"
-      :probe-type="3"
-      @scroll="contentscroll"
-      :pull-up-load="true"
-      @pullingUp="loadmore"
-    >
+    <scroll class="scroll" ref="scroll" :probe-type="3" @scroll="contentscroll">
       <goods-list :goods="showgoods" />
     </scroll>
     <back-top @click.native="backClick" v-show="isshowBT" />
@@ -78,6 +71,13 @@ export default {
     showgoods() {
       return this.goods[this.currentType].list;
     },
+  },
+  mounted() {
+    //监听Item图片加载完成
+    this.$bus.$on("itemImageLoad", () => {
+      console.log("-------");
+      this.$refs.scroll.refresh();
+    });
   },
 
   methods: {
