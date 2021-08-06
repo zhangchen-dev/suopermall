@@ -1,18 +1,25 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-    <scroll class="scroll">
-      <home-swiper :banners="banners" />
-      <home-recommend-view :recommends="recommends" />
-      <feature-view />
-      <tab-control
-        :titles="['流行', '新款', '精选']"
-        class="tabcontrol"
-        @tabClick="tabClick"
-      />
+    <home-swiper :banners="banners" />
+    <home-recommend-view :recommends="recommends" />
+    <feature-view />
+    <tab-control
+      :titles="['流行', '新款', '精选']"
+      class="tabcontrol"
+      @tabClick="tabClick"
+    />
+    <scroll
+      class="scroll"
+      ref="scroll"
+      :probe-type="3"
+      @scroll="contentscroll"
+      :pull-up-load="true"
+      @pullingUp="loadmore"
+    >
       <goods-list :goods="showgoods" />
     </scroll>
-    <back-top @click.native="backClick" />
+    <back-top @click.native="backClick" v-show="isshowBT" />
   </div>
 </template>
 <script>
@@ -56,6 +63,7 @@ export default {
         sell: { page: 0, list: [] },
       },
       currentType: "pop",
+      isshowBT: false,
     };
   },
   created() {
@@ -86,6 +94,9 @@ export default {
       getHomegoods(type, page).then((res) => {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
+
+        this.$refs.scroll.finishPullUp();
+        this.$refs.scroll.scroll.refresh();
       });
     },
     //事件监听相关
@@ -102,17 +113,27 @@ export default {
           break;
       }
     },
+    backClick() {
+      this.$refs.scroll.scrollTo(0, 0);
+    },
+    contentscroll(position) {
+      // console.log(position);
+      this.isshowBT = -position.y > 1000 ? true : false;
+    },
+    loadmore() {
+      // console.log("上拉加载更多");
+      this.getHomegoods(this.currentType);
+    },
   },
 };
 </script>
 <style scoped>
 #home {
+  /* position: absolute; */
   /* margin-top: 44px; */
   padding-top: 44px;
 }
 .home-nav {
-  position: relative;
-
   background-color: var(--color-tint);
   color: #fff;
   position: fixed;
@@ -130,10 +151,9 @@ export default {
 }
 .scroll {
   overflow: hidden;
-  position: absolute;
-  top: 44px;
-  left: 0px;
-  right: 0px;
-  bottom: 49px;
+  position: sticky;
+  top: 100px;
+  height: 500px;
+  width: 100%;
 }
 </style>
