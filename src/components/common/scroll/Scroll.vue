@@ -42,6 +42,14 @@ export default {
     //   this.$emit("pullingUp");
     // '上拉加载更多'
     // });
+
+    // 监听scroll滚动到底部
+    if (this.pullUpLoad) {
+      this.scroll.on("pullingUp", () => {
+        // console.log("222222");
+        this.$emit("pullingUp");
+      });
+    }
   },
   methods: {
     scrollTo(x, y, time = 300) {

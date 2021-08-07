@@ -1,15 +1,23 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-    <home-swiper :banners="banners" />
-    <home-recommend-view :recommends="recommends" />
-    <feature-view />
-    <tab-control
-      :titles="['流行', '新款', '精选']"
-      class="tabcontrol"
-      @tabClick="tabClick"
-    />
-    <scroll class="scroll" ref="scroll" :probe-type="3" @scroll="contentscroll">
+
+    <scroll
+      class="scroll"
+      ref="scroll"
+      :probe-type="3"
+      @scroll="contentscroll"
+      :pull-up-load="true"
+      @pullingUp="loadmore"
+    >
+      <home-swiper :banners="banners" @swiperImageLoad="swiperImageLoad" />
+      <home-recommend-view :recommends="recommends" />
+      <feature-view />
+      <tab-control
+        :titles="['流行', '新款', '精选']"
+        @tabClick="tabClick"
+        ref="tabcontrol"
+      />
       <goods-list :goods="showgoods" />
     </scroll>
     <back-top @click.native="backClick" v-show="isshowBT" />
@@ -32,6 +40,7 @@ import BackTop from "components/content/backTop/BackTop.vue";
 import { getHomeMutlidata, getHomegoods } from "network/home";
 
 import Scroll from "components/common/scroll/Scroll.vue";
+import { debounde } from "common/utils/utils";
 
 export default {
   name: "home",
@@ -57,6 +66,7 @@ export default {
       },
       currentType: "pop",
       isshowBT: false,
+      tabOffsetTop: 0,
     };
   },
   created() {
@@ -73,10 +83,12 @@ export default {
     },
   },
   mounted() {
+    //防抖功能实现
+    const refresh = debounde(this.$refs.scroll.refresh, 500);
+
     //监听Item图片加载完成
     this.$bus.$on("itemImageLoad", () => {
-      console.log("-------");
-      this.$refs.scroll.refresh();
+      refresh();
     });
   },
 
@@ -94,7 +106,7 @@ export default {
       getHomegoods(type, page).then((res) => {
         this.goods[type].list.push(...res.data.list);
         this.goods[type].page += 1;
-
+        // scroll默认加载更多只有一次，则需要调用finish函数才可以重复加载
         this.$refs.scroll.finishPullUp();
         this.$refs.scroll.scroll.refresh();
       });
@@ -124,6 +136,11 @@ export default {
       // console.log("上拉加载更多");
       this.getHomegoods(this.currentType);
     },
+
+    //
+    swiperImageLoad() {
+      console.log(this.$refs.tabcontrol.$el.offsetTop);
+    },
   },
 };
 </script>
@@ -144,7 +161,6 @@ export default {
 }
 .tabcontrol {
   position: absolute;
-  position: sticky;
   background-color: #fff;
   top: 44px;
   z-index: 9;
