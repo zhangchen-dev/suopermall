@@ -1,7 +1,13 @@
 <template>
   <div id="home">
     <nav-bar class="home-nav"><div slot="center">购物街</div></nav-bar>
-
+    <tab-control
+      ref="tabcontrol1"
+      :titles="['流行', '新款', '精选']"
+      @tabClick="tabClick"
+      class="tab-control"
+      v-show="isTabFixed"
+    />
     <scroll
       class="scroll"
       ref="scroll"
@@ -14,9 +20,9 @@
       <home-recommend-view :recommends="recommends" />
       <feature-view />
       <tab-control
+        ref="tabcontrol2"
         :titles="['流行', '新款', '精选']"
         @tabClick="tabClick"
-        ref="tabcontrol"
       />
       <goods-list :goods="showgoods" />
     </scroll>
@@ -66,7 +72,9 @@ export default {
       },
       currentType: "pop",
       isshowBT: false,
-      tabOffsetTop: 0,
+      tabOffsetTop: 534,
+      isTabFixed: false,
+      saveY: 0,
     };
   },
   created() {
@@ -81,6 +89,14 @@ export default {
     showgoods() {
       return this.goods[this.currentType].list;
     },
+  },
+  activated() {
+    // console.log("activated");
+    this.$refs.scroll.scrollTo(0, this.saveY, 0);
+    this.$refs.scroll.refresh();
+  },
+  deactivated() {
+    this.saveY = this.$refs.scroll.getScrollY();
   },
   mounted() {
     //防抖功能实现
@@ -124,13 +140,18 @@ export default {
           this.currentType = "sell";
           break;
       }
+      this.$refs.tabcontrol1.currentkey = index;
+      this.$refs.tabcontrol2.currentkey = index;
     },
     backClick() {
       this.$refs.scroll.scrollTo(0, 0);
     },
     contentscroll(position) {
       // console.log(position);
+      // 1.0 判断backtop是否显示
       this.isshowBT = -position.y > 1000 ? true : false;
+      // 2.0 判断吸顶位置（position:fixed）
+      this.isTabFixed = -position.y > this.tabOffsetTop;
     },
     loadmore() {
       // console.log("上拉加载更多");
@@ -139,37 +160,33 @@ export default {
 
     //
     swiperImageLoad() {
-      console.log(this.$refs.tabcontrol.$el.offsetTop);
+      console.log(this.$refs.tabcontrol2.$el.offsetTop);
     },
   },
 };
 </script>
 <style scoped>
-#home {
-  /* position: absolute; */
-  /* margin-top: 44px; */
-  padding-top: 44px;
+.home {
+  position: relative;
 }
 .home-nav {
   background-color: var(--color-tint);
   color: #fff;
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  z-index: 9;
+  position: relative;
 }
-.tabcontrol {
-  position: absolute;
+#tab-control {
   background-color: #fff;
-  top: 44px;
-  z-index: 9;
 }
 .scroll {
   overflow: hidden;
-  position: sticky;
-  top: 100px;
-  height: 500px;
-  width: 100%;
+  position: absolute;
+  top: 44px;
+  bottom: 49px;
+}
+
+.tab-control {
+  background-color: #fff;
+  position: relative;
+  z-index: 9;
 }
 </style>
