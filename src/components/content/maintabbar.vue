@@ -1,5 +1,5 @@
 <template>
-  <tabbar>
+  <tabbar class="tabbar">
     <tabbar-item link="/home" activeColor="blue">
       <img slot="item-icon" src="../../assets/img/tabbar/home.svg" alt="" />
       <img
@@ -49,3 +49,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.tabbar {
+  width: 100%;
+}
+</style>
